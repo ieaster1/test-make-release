@@ -35,7 +35,7 @@ release: check_deps
 	fi
 	@echo "Found changelog entry for version $(VERSION)"
 	@# Create and push tag
-	git tag -a "$(VERSION)"
+	git tag "$(VERSION)"
 	git push origin "$(VERSION)"
 	gh release create "$(VERSION)" \
 	  --latest \
