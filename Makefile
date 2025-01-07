@@ -28,6 +28,7 @@ release: check_deps
 	@echo "Creating release $(VERSION)"
 	@# Extract changelog entry for this version
 	@awk '/^## \[$(VERSION)\]/{p=1;print;next}/^## \[.*\]/{p=0}p' CHANGELOG.md > .release_notes.md
+	@grep "^\[$(VERSION)\]:" CHANGELOG.md >> .release_notes.md
 	@if [ ! -s .release_notes.md ]; then \
 		echo "Error: No changelog entry found for version '$(VERSION)' in CHANGELOG.md"; \
 		echo "Ensure CHANGELOG.md exists and contains an entry for version: $(VERSION)"; \
