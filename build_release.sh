@@ -22,16 +22,38 @@ declare -A categories=(
     ["feat"]="✨ Features"
     ["fix"]="🐛 Bug Fixes"
     ["perf"]="🚀 Performance Improvements"
+    ["security"]="🔒 Security"
+    ["chore"]="🏗️ Chores"
     ["refactor"]="♻️ Refactoring"
     ["test"]="🧪 Tests"
     ["build"]="👷 Build System"
     ["ci"]="🔄 Continuous Integration"
     ["style"]="💄 Styling"
     ["revert"]="⏪️ Reverts"
-    ["security"]="🔒 Security"
+    ["utils"]="🛠️ Utilities"
     ["deps"]="⬆️ Dependencies"
-    ["chore"]="🏗️ Chores"
     ["docs"]="📝 Documentation"
+)
+
+# define the order we want categories to appear
+# this is slightly redundant, but it ensures the order
+# of categories in the release notes
+category_order=(
+    "breaking"
+    "feat"
+    "fix"
+    "perf"
+    "security"
+    "chore"
+    "refactor"
+    "test"
+    "build"
+    "ci"
+    "style"
+    "revert"
+    "utils"
+    "deps"
+    "docs"
 )
 
 cat > "$RELEASE_NOTES" << EOF
@@ -39,7 +61,7 @@ cat > "$RELEASE_NOTES" << EOF
 
 EOF
 
-for prefix in "${!categories[@]}"; do
+for prefix in "${category_order[@]}"; do
     commits=$(git log --pretty=format:"- %s" "$last_tag"..HEAD | grep "$prefix:" | sed "s/$prefix: //" || echo "")
     if [ -n "$commits" ]; then
         cat >> "$RELEASE_NOTES" << EOF
