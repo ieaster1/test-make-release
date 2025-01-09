@@ -1,3 +1,11 @@
+## [0.6.0] - 2025-01-09
+
+### ✨ Features
+ - adding commit short_hash to the release notes (585d9e2)
+
+### 📝 Documentation
+ - removing accidental EOF line and added shields.io release badge. (a7bdb68)
+
 ## [0.5.0] - 2025-01-09
 
 ### 🚨 Breaking Changes
@@ -42,6 +50,7 @@
  - third
  - fourth
 
+[0.6.0]: https://github.com/ieaster1/test-make-release/compare/0.5.0...0.6.0
 [0.5.0]: https://github.com/ieaster1/test-make-release/compare/0.4.0...0.5.0
 [0.4.0]: https://github.com/ieaster1/test-make-release/compare/0.3.0...0.4.0
 [0.3.0]: https://github.com/ieaster1/test-make-release/compare/0.2.0...0.3.0
