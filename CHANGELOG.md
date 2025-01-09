@@ -1,5 +1,3 @@
-# Test Changelog
-
 ## [0.3.0]
   - feat: properly include version comparison link
   - feat: more intune with keep a change log format

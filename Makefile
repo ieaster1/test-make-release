@@ -1,5 +1,6 @@
 # Check required tools
 REQUIRED_DEPS := gh git
+HEAD_BRANCH := $(shell git remote show origin | grep 'HEAD branch' | cut -d' ' -f5)
 
 check_deps:
 	$(foreach dep,$(REQUIRED_DEPS),\
@@ -7,10 +8,6 @@ check_deps:
 
 .PHONY: check_deps
 
-# Environment
-ENV ?= development
-
-# Version validation
 define check_version
 	@if [ -z "$(VERSION)" ]; then \
 		echo "Error: VERSION is required. Usage: make release VERSION=X.Y.Z"; \
@@ -22,28 +19,21 @@ define check_version
 	fi
 endef
 
+define check_head_branch
+	@if [ "$(shell git rev-parse --abbrev-ref HEAD)" != $(HEAD_BRANCH) ]; then \
+		echo "Error: You must be on the '$(HEAD_BRANCH)' branch to create a release."; \
+		exit 1; \
+	fi
+endef
+
 .PHONY: release
 release: check_deps
 	$(call check_version)
-	@echo "Creating release $(VERSION)"
-	@# Extract changelog entry for this version
-	@awk '/^## \[$(VERSION)\]/{p=1;print;next}/^## \[.*\]/{p=0}p' CHANGELOG.md > .release_notes.md
-	@grep "^\[$(VERSION)\]:" CHANGELOG.md >> .release_notes.md
-	@if [ ! -s .release_notes.md ]; then \
-		echo "Error: No changelog entry found for version '$(VERSION)' in CHANGELOG.md"; \
-		echo "Ensure CHANGELOG.md exists and contains an entry for version: $(VERSION)"; \
-		exit 1; \
-	fi
-	@echo "Found changelog entry for version $(VERSION)"
-	@# Create and push tag
-	git tag "$(VERSION)"
-	git push origin "$(VERSION)"
-	gh release create "$(VERSION)" \
-	  --latest \
-	  --title "Release $(VERSION)" \
-	  --notes-file .release_notes.md
-	@echo "Release $(VERSION) created successfully!"
+	$(call check_head_branch)
+	@./build_release.sh $(VERSION)
 
 .PHONY: clean
 clean:
-	rm -f .release_notes.md
+	@echo "Cleaning up release files."
+	rm -f .release_notes.tmp .github_notes.tmp .changelog_content.tmp .urls.tmp .all_urls.tmp
+	@echo "Done."
