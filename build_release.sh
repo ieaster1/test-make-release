@@ -62,7 +62,7 @@ cat > "$RELEASE_NOTES" << EOF
 EOF
 
 for prefix in "${category_order[@]}"; do
-    commits=$(git log --pretty=format:"- %s" "$last_tag"..HEAD | grep "$prefix:" | sed "s/$prefix: //" || echo "")
+    commits=$(git log --pretty=format:" - %s (%h)" "$last_tag"..HEAD | grep "$prefix:" | sed "s/$prefix: //" || echo "")
     if [ -n "$commits" ]; then
         cat >> "$RELEASE_NOTES" << EOF
 ### ${categories[$prefix]}
@@ -73,7 +73,7 @@ EOF
 done
 
 category_pattern=$(printf '%s|' "${!categories[@]}" | sed 's/|$//')
-other=$(git log --pretty=format:"- %s" "$last_tag"..HEAD | grep -v -E "($category_pattern):" || echo "")
+other=$(git log --pretty=format:" - %s (%h)" "$last_tag"..HEAD | grep -v -E "($category_pattern):" || echo "")
 
 if [ -n "$other" ]; then
     cat >> "$RELEASE_NOTES" << EOF
